@@ -32,6 +32,14 @@
   id: 0,
 }
 
+// reducer
+function todos (state = [], action) {
+  if (action.type === "ADD_TODO") {
+    return state.concat([action.todo]);
+  }
+  return state;
+}
+
 function createStore () {
   // four parts
   // 1. state
@@ -39,7 +47,8 @@ function createStore () {
   // 3. method to listen to changes on state
   // 4. method to update state
 
-  // 1. internal state
+  // 1. internal state (undefined to start, but will be an array eventually)
+  // ... not sure why it's not an object....yet
   let state;
   // listeners
   let listeners = [];
