@@ -1,3 +1,8 @@
+function generateId () {
+  return Math.random().toString(36).substring(2)
+    + (new Date()).getTime().toString(36);
+}
+
 // library code
 function createStore (reducer) {
   // four parts
@@ -158,3 +163,29 @@ store.dispatch(addGoalAction({
 }));
 
 store.dispatch(removeGoalAction(0));
+
+// DOM code
+document.getElementById("todoBtn").addEventListener("click", addTodo);
+document.getElementById("goalBtn").addEventListener("click", addGoal);
+
+function addTodo () {
+  const input = document.getElementById("todo");
+  const name = input.value;
+  input.value = "";
+
+  store.dispatch(addTodoAction({
+    id: generateId(),
+    name,
+    complete: false,
+  }));
+}
+
+function addGoal () {
+  const input = document.getElementById("goal");
+  const name = input.value;
+  input.value = "";
+  store.dispatch(addGoalAction({
+    id: generateId(),
+    name,
+  }));
+}
