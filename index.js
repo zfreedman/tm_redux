@@ -34,18 +34,28 @@
 
 // reducer
 function todos (state = [], action) {
-  if (action.type === "ADD_TODO") {
-    return state.concat([action.todo]);
+  switch(action.type) {
+      case "ADD_TODO":
+        return state.concat([action.todo]);
+      case "REMOVE_TODO":
+        return state.filter((todo) => todo.id !== action.id);
+      case "TOGGLE_TODO":
+        return state.map(
+          (todo) => todo.id !== action.id
+            ? todo : Object.assign({}, todo, {complete: !todo.complete})
+        );
+      default:
+        return state;
   }
-  return state;
+
 }
 
-function createStore () {
+function createStore (reducer) {
   // four parts
   // 1. state
-  // 2. method to get state
-  // 3. method to listen to changes on state
-  // 4. method to update state
+  // 2. method to get state (getState)
+  // 3. method to listen to changes on state (subscribe)
+  // 4. method to update state (dispatch)
 
   // 1. internal state (undefined to start, but will be an array eventually)
   // ... not sure why it's not an object....yet
@@ -70,5 +80,12 @@ function createStore () {
     };
   };
 
-  return { getState, subscribe }
+  const dispatch = (action) => {
+    // call todos
+    state = reducer(state, action);
+    // loop over listeners and invoke
+    listeners.forEach((listener) => listener())
+  };
+
+  return { getState, subscribe, dispatch }
 }
