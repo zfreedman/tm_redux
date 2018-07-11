@@ -3,47 +3,6 @@ function generateId () {
     + (new Date()).getTime().toString(36);
 }
 
-// library code
-function createStore (reducer) {
-  // four parts
-  // 1. state
-  // 2. method to get state (getState)
-  // 3. method to listen to changes on state (subscribe)
-  // 4. method to update state (dispatch)
-
-  // 1. internal state (undefined to start, but will be an array eventually)
-  // ... not sure why it's not an object....yet
-  let state;
-  // listeners
-  let listeners = [];
-
-  // 2. get state
-  const getState = () => state;
-
-  // 3. subscribe/listen to state changes
-  const subscribe = (listener) => {
-    // add listener
-    listeners.push(listener);
-
-    // return way to unsubscribe
-    // below is a function that, when called, will reassign the private
-    // variable *listeners* to it's filtered counterpart, where the filter
-    // has removed all listeners except for the one assigned during this call
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
-  };
-
-  const dispatch = (action) => {
-    // call todos
-    state = reducer(state, action);
-    // loop over listeners and invoke
-    listeners.forEach((listener) => listener())
-  };
-
-  return { getState, subscribe, dispatch }
-}
-
 // app code
 const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
@@ -114,17 +73,11 @@ function goals (state = [], action) {
   }
 }
 
-// app (combined) reducer
-function app (state = {}, action) {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action),
-  };
-}
-
 // use this stuff below for testing
-// let store = createStore(app);
-const store = createStore(app);
+const store = Redux.createStore(Redux.combineReducers({
+  todos,
+  goals,
+}));
 
 store.subscribe(() => {
   // console.log('The new state is: ', store.getState());
