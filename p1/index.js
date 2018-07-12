@@ -3,47 +3,6 @@ function generateId () {
     + (new Date()).getTime().toString(36);
 }
 
-// library code
-function createStore (reducer) {
-  // four parts
-  // 1. state
-  // 2. method to get state (getState)
-  // 3. method to listen to changes on state (subscribe)
-  // 4. method to update state (dispatch)
-
-  // 1. internal state (undefined to start, but will be an array eventually)
-  // ... not sure why it's not an object....yet
-  let state;
-  // listeners
-  let listeners = [];
-
-  // 2. get state
-  const getState = () => state;
-
-  // 3. subscribe/listen to state changes
-  const subscribe = (listener) => {
-    // add listener
-    listeners.push(listener);
-
-    // return way to unsubscribe
-    // below is a function that, when called, will reassign the private
-    // variable *listeners* to it's filtered counterpart, where the filter
-    // has removed all listeners except for the one assigned during this call
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
-  };
-
-  const dispatch = (action) => {
-    // call todos
-    state = reducer(state, action);
-    // loop over listeners and invoke
-    listeners.forEach((listener) => listener())
-  };
-
-  return { getState, subscribe, dispatch }
-}
-
 // app code
 const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
@@ -131,17 +90,11 @@ function goals (state = [], action) {
   }
 }
 
-// app (combined) reducer
-function app (state = {}, action) {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action),
-  };
-}
-
 // use this stuff below for testing
-// let store = createStore(app);
-const store = createStore(app);
+const store = Redux.createStore(Redux.combineReducers({
+  todos,
+  goals,
+}));
 
 store.subscribe(() => {
   // console.log('The new state is: ', store.getState());
@@ -153,60 +106,6 @@ store.subscribe(() => {
   todos.forEach(addTodoToDOM)
   goals.forEach(addGoalToDOM)
 });
-
-function addTodoToDOM (todo) {
-  const node = document.createElement("li");
-  const text = document.createTextNode(todo.name);
-  node.append(text);
-
-  node.style.textDecoration = todo.complete ? "line-through" : "none";
-  node.addEventListener("click", () => {
-    checkAndDispatch(store, toggleTodoAction(todo.id));
-  });
-
-  document.getElementById("todos").appendChild(node);
-}
-
-function addGoalToDOM (goal) {
-  const node = document.createElement("li");
-  const text = document.createTextNode(goal.name);
-  node.append(text);
-  document.getElementById("goals").appendChild(node);
-}
-
-// checkAndDispatch(store, addTodoAction({
-//   id: 0,
-//   name: "Walk the dog",
-//   complete: false,
-// }));
-//
-// checkAndDispatch(store, addTodoAction({
-//   id: 1,
-//   name: 'Wash the car',
-//   complete: false,
-// }));
-//
-// checkAndDispatch(store, addTodoAction({
-//   id: 2,
-//   name: 'Go to the gym',
-//   complete: true,
-// }));
-//
-// checkAndDispatch(store, removeTodoAction(1));
-//
-// checkAndDispatch(store, toggleTodoAction(0));
-//
-// checkAndDispatch(store, addGoalAction({
-//   id: 0,
-//   name: 'Learn Redux'
-// }));
-//
-// checkAndDispatch(store, addGoalAction({
-//   id: 1,
-//   name: 'Lose 20 pounds'
-// }));
-//
-// checkAndDispatch(store, removeGoalAction(0));
 
 // DOM code
 document.getElementById("todoBtn").addEventListener("click", addTodo);
@@ -232,4 +131,42 @@ function addGoal () {
     id: generateId(),
     name,
   }));
+}
+
+function createRemoveButton (onClick) {
+  const removeBtn = document.createElement("button");
+  removeBtn.innerHTML = "X";
+  removeBtn.addEventListener("click", onClick);
+  return removeBtn;
+}
+
+function addTodoToDOM (todo) {
+  const node = document.createElement("li");
+  const text = document.createTextNode(todo.name);
+
+  const removeBtn = createRemoveButton(() => {
+    store.dispatch(removeTodoAction(todo.id));
+  });
+  node.append(text);
+  node.append(removeBtn);
+
+  node.style.textDecoration = todo.complete ? "line-through" : "none";
+  node.addEventListener("click", () => {
+    store.dispatch(toggleTodoAction(todo.id));
+  });
+
+  document.getElementById("todos").appendChild(node);
+}
+
+function addGoalToDOM (goal) {
+  const node = document.createElement("li");
+  const text = document.createTextNode(goal.name);
+
+  const removeBtn = createRemoveButton(() => {
+    store.dispatch(removeGoalAction(goal.id));
+  });
+
+  node.append(text);
+  node.appendChild(removeBtn);
+  document.getElementById("goals").appendChild(node);
 }
