@@ -85,6 +85,23 @@ function removeGoalAction(id) {
   };
 }
 
+function checkAndDispatch (store, action) {
+  if (
+    action.type === ADD_TODO &&
+    action.todo.name.toLowerCase().indexOf("bitcoin") !== -1
+  ) {
+    return alert("Nope. That's a bad idea.");
+  }
+  else if (
+    action.type === ADD_GOAL &&
+    action.goal.name.toLowerCase().indexOf("bitcoin") !== -1
+  ) {
+    return alert("Nope. That's a bad idea.");
+  }
+  // all other cases, handle action accordingly
+  return store.dispatch(action);
+}
+
 // todos reducer
 function todos (state = [], action) {
   switch(action.type) {
@@ -144,7 +161,7 @@ function addTodoToDOM (todo) {
 
   node.style.textDecoration = todo.complete ? "line-through" : "none";
   node.addEventListener("click", () => {
-    store.dispatch(toggleTodoAction(todo.id));
+    checkAndDispatch(store, toggleTodoAction(todo.id));
   });
 
   document.getElementById("todos").appendChild(node);
@@ -157,39 +174,39 @@ function addGoalToDOM (goal) {
   document.getElementById("goals").appendChild(node);
 }
 
-// store.dispatch(addTodoAction({
+// checkAndDispatch(store, addTodoAction({
 //   id: 0,
 //   name: "Walk the dog",
 //   complete: false,
 // }));
 //
-// store.dispatch(addTodoAction({
+// checkAndDispatch(store, addTodoAction({
 //   id: 1,
 //   name: 'Wash the car',
 //   complete: false,
 // }));
 //
-// store.dispatch(addTodoAction({
+// checkAndDispatch(store, addTodoAction({
 //   id: 2,
 //   name: 'Go to the gym',
 //   complete: true,
 // }));
 //
-// store.dispatch(removeTodoAction(1));
+// checkAndDispatch(store, removeTodoAction(1));
 //
-// store.dispatch(toggleTodoAction(0));
+// checkAndDispatch(store, toggleTodoAction(0));
 //
-// store.dispatch(addGoalAction({
+// checkAndDispatch(store, addGoalAction({
 //   id: 0,
 //   name: 'Learn Redux'
 // }));
 //
-// store.dispatch(addGoalAction({
+// checkAndDispatch(store, addGoalAction({
 //   id: 1,
 //   name: 'Lose 20 pounds'
 // }));
 //
-// store.dispatch(removeGoalAction(0));
+// checkAndDispatch(store, removeGoalAction(0));
 
 // DOM code
 document.getElementById("todoBtn").addEventListener("click", addTodo);
@@ -200,7 +217,7 @@ function addTodo () {
   const name = input.value;
   input.value = "";
 
-  store.dispatch(addTodoAction({
+  checkAndDispatch(store, addTodoAction({
     id: generateId(),
     name,
     complete: false,
@@ -211,7 +228,7 @@ function addGoal () {
   const input = document.getElementById("goal");
   const name = input.value;
   input.value = "";
-  store.dispatch(addGoalAction({
+  checkAndDispatch(store, addGoalAction({
     id: generateId(),
     name,
   }));
