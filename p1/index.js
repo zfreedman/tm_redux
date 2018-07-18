@@ -61,6 +61,23 @@ function checkAndDispatch (store, action) {
   return store.dispatch(action);
 }
 
+const checker = store => next => action => {
+  if (
+    action.type === ADD_TODO &&
+    action.todo.name.toLowerCase().indexOf("bitcoin") !== -1
+  ) {
+    return alert("Nope. That's a bad idea.");
+  }
+  else if (
+    action.type === ADD_GOAL &&
+    action.goal.name.toLowerCase().indexOf("bitcoin") !== -1
+  ) {
+    return alert("Nope. That's a bad idea.");
+  }
+  // all other cases, handle action accordingly
+  return next(action);
+};
+
 // todos reducer
 function todos (state = [], action) {
   switch(action.type) {
@@ -94,7 +111,7 @@ function goals (state = [], action) {
 const store = Redux.createStore(Redux.combineReducers({
   todos,
   goals,
-}));
+}), Redux.applyMiddleware(checker));
 
 store.subscribe(() => {
   // console.log('The new state is: ', store.getState());
@@ -116,7 +133,7 @@ function addTodo () {
   const name = input.value;
   input.value = "";
 
-  checkAndDispatch(store, addTodoAction({
+  store.dispatch(addTodoAction({
     id: generateId(),
     name,
     complete: false,
@@ -127,7 +144,7 @@ function addGoal () {
   const input = document.getElementById("goal");
   const name = input.value;
   input.value = "";
-  checkAndDispatch(store, addGoalAction({
+  store.dispatch(addGoalAction({
     id: generateId(),
     name,
   }));
