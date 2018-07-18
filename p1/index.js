@@ -61,6 +61,7 @@ function checkAndDispatch (store, action) {
   return store.dispatch(action);
 }
 
+// bitcoin checker middleware
 const checker = store => next => action => {
   if (
     action.type === ADD_TODO &&
@@ -76,6 +77,16 @@ const checker = store => next => action => {
   }
   // all other cases, handle action accordingly
   return next(action);
+};
+
+// logger applyMiddleware
+const logger = store => next => action => {
+  console.group(action.type);
+  console.log("action:", action);
+  const result = next(action);
+  console.log("new state: ", store.getState());
+  console.groupEnd();
+  return result;
 };
 
 // todos reducer
@@ -111,7 +122,7 @@ function goals (state = [], action) {
 const store = Redux.createStore(Redux.combineReducers({
   todos,
   goals,
-}), Redux.applyMiddleware(checker));
+}), Redux.applyMiddleware(checker, logger));
 
 store.subscribe(() => {
   // console.log('The new state is: ', store.getState());
