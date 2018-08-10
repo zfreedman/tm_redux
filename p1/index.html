@@ -61,14 +61,13 @@
 
       addItem = event => {
         event.preventDefault();
-        const name = this.input.value;
-        this.input.value = "";
 
-        this.props.store.dispatch(addTodoAction({
-          id: generateId(),
-          name,
-          complete: false
-        }));
+        return API.saveTodo(this.input.value)
+          .then(todo => {
+            this.props.store.dispatch(addTodoAction(todo));
+            this.input.value = "";
+          })
+          .catch(() => alert("There was an error saving the todo. Try again."));
       };
 
       removeItem = todo => {
@@ -119,13 +118,13 @@
 
       addItem = event => {
         event.preventDefault();
-        const name = this.input.value;
-        this.input.value = "";
 
-        this.props.store.dispatch(addGoalAction({
-          id: generateId(),
-          name
-        }));
+        return API.saveGoal(this.input.value)
+          .then(goal => {
+            this.props.store.dispatch(addGoalAction(goal));
+            this.input.value = "";
+          })
+          .catch(() => alert("The goal could not be saved. Please try again."));
       };
 
       removeItem = goal => {
