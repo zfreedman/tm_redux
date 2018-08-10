@@ -85,7 +85,16 @@
       };
 
       toggleItem = (id) => {
-        this.props.store.dispatch(toggleTodoAction(id))
+        // immediate client-side feedback
+        this.props.store.dispatch(toggleTodoAction(id));
+
+        // make request
+        return API.saveTodoToggle(id)
+          .catch(() => {
+            // handle failure
+            this.props.store.dispatch(toggleTodoAction(id));
+            alert("The todo was unable to be toggled.");
+          });
       };
     }
 
