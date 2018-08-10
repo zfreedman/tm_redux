@@ -71,8 +71,17 @@
         }));
       };
 
-      removeItem = (todo) => {
+      removeItem = todo => {
+        // give immediate feedback
         this.props.store.dispatch(removeTodoAction(todo.id));
+
+        // attempt to delete on server
+        return API.deleteTodo(todo.id)
+          // add item back if failure
+          .catch(() => {
+            this.props.store.dispatch(addTodoAction(todo));
+            alert("An error occurred. Try again.");
+          });
       };
 
       toggleItem = (id) => {
@@ -112,6 +121,12 @@
 
       removeItem = goal => {
         this.props.store.dispatch(removeGoalAction(goal.id));
+
+        return API.deleteGoal(goal)
+          .catch(() => {
+            this.props.store.dispatch(addGoalAction(goal));
+            alert("An error has occurred. Please try again.");
+          });
       };
     }
 
@@ -123,7 +138,7 @@
         if (loading === true) {
           return <h3>Loading</h3>;
         }
-        
+
         return (
           <div>
             <Todos todos={todos} store={store} />
