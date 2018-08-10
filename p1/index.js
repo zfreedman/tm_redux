@@ -53,6 +53,21 @@ function receiveDataAction(todos, goals) {
   };
 }
 
+function handleDeleteTodo (todo) {
+  return dispatch => {
+    // give immediate feedback
+    dispatch(removeTodoAction(todo.id));
+
+    // attempt to delete on server
+    return API.deleteTodo(todo.id)
+    // add item back if failure
+    .catch(() => {
+      dispatch(addTodoAction(todo));
+      alert("An error occurred. Try again.");
+    });
+  };
+}
+
 function checkAndDispatch (store, action) {
   if (
     action.type === ADD_TODO &&
@@ -96,6 +111,13 @@ const logger = store => next => action => {
   console.log("new state: ", store.getState());
   console.groupEnd();
   return result;
+};
+
+const thunk = store => next => action => {
+  if (typeof action === "function") {
+    return action(store.dispatch);
+  }
+  return next(action);
 };
 
 // todos reducer
@@ -145,4 +167,4 @@ const store = Redux.createStore(Redux.combineReducers({
   goals,
   todos,
   loading,
-}), Redux.applyMiddleware(checker, logger));
+}), Redux.applyMiddleware(thunk, checker, logger));

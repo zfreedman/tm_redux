@@ -71,16 +71,7 @@
       };
 
       removeItem = todo => {
-        // give immediate feedback
-        this.props.store.dispatch(removeTodoAction(todo.id));
-
-        // attempt to delete on server
-        return API.deleteTodo(todo.id)
-          // add item back if failure
-          .catch(() => {
-            this.props.store.dispatch(addTodoAction(todo));
-            alert("An error occurred. Try again.");
-          });
+        this.props.store.dispatch(handleDeleteTodo(todo));
       };
 
       toggleItem = (id) => {
