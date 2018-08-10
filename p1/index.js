@@ -131,8 +131,18 @@ function goals (state = [], action) {
   }
 }
 
+function loading (state = true, action) {
+  switch(action.type) {
+    case RECEIVE_DATA:
+      return false;
+    default:
+      return state;
+  }
+}
+
 // use this stuff below for testing
 const store = Redux.createStore(Redux.combineReducers({
-  todos,
   goals,
+  todos,
+  loading,
 }), Redux.applyMiddleware(checker, logger));
