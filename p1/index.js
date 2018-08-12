@@ -68,6 +68,29 @@ function handleDeleteTodo (todo) {
   };
 }
 
+function handleDeleteGoal (goal) {
+  return dispatch => {
+    dispatch(removeGoalAction(goal.id));
+
+    return API.deleteGoal(goal)
+      .catch(() => {
+        dispatch(addGoalAction(goal));
+        alert("An error has occured. Please try again.");
+      });
+  };
+}
+
+function handleAddGoal (goalName, callback) {
+  return dispatch => {
+    return API.saveGoal(goalName)
+      .then(goal => {
+        dispatch(addGoalAction(goal));
+        callback();
+      })
+      .catch(() => alert("The goal could not be saved. Please try again."));
+  };
+}
+
 function checkAndDispatch (store, action) {
   if (
     action.type === ADD_TODO &&

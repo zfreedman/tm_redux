@@ -110,22 +110,14 @@
       addItem = event => {
         event.preventDefault();
 
-        return API.saveGoal(this.input.value)
-          .then(goal => {
-            this.props.store.dispatch(addGoalAction(goal));
-            this.input.value = "";
-          })
-          .catch(() => alert("The goal could not be saved. Please try again."));
+        this.props.store.dispatch(handleAddGoal(
+          this.input.value,
+          () => this.input.value = ""
+        ));
       };
 
       removeItem = goal => {
-        this.props.store.dispatch(removeGoalAction(goal.id));
-
-        return API.deleteGoal(goal)
-          .catch(() => {
-            this.props.store.dispatch(addGoalAction(goal));
-            alert("An error has occurred. Please try again.");
-          });
+        this.props.store.dispatch(handleDeleteGoal(goal));
       };
     }
 
