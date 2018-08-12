@@ -167,12 +167,12 @@ const logger = store => next => action => {
   return result;
 };
 
-const thunk = store => next => action => {
-  if (typeof action === "function") {
-    return action(store.dispatch);
-  }
-  return next(action);
-};
+// const thunk = store => next => action => {
+//   if (typeof action === "function") {
+//     return action(store.dispatch);
+//   }
+//   return next(action);
+// };
 
 // todos reducer
 function todos (state = [], action) {
@@ -221,4 +221,5 @@ const store = Redux.createStore(Redux.combineReducers({
   goals,
   todos,
   loading,
-}), Redux.applyMiddleware(thunk, checker, logger));
+// }), Redux.applyMiddleware(thunk, checker, logger));
+}), Redux.applyMiddleware(ReduxThunk.default, checker, logger));
