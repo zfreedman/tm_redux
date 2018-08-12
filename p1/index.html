@@ -61,13 +61,10 @@
 
       addItem = event => {
         event.preventDefault();
-
-        return API.saveTodo(this.input.value)
-          .then(todo => {
-            this.props.store.dispatch(addTodoAction(todo));
-            this.input.value = "";
-          })
-          .catch(() => alert("There was an error saving the todo. Try again."));
+        this.props.store.dispatch(handleAddTodo(
+          this.input.value,
+          () => this.input.value = ""
+        ));
       };
 
       removeItem = todo => {
@@ -75,16 +72,7 @@
       };
 
       toggleItem = (id) => {
-        // immediate client-side feedback
-        this.props.store.dispatch(toggleTodoAction(id));
-
-        // make request
-        return API.saveTodoToggle(id)
-          .catch(() => {
-            // handle failure
-            this.props.store.dispatch(toggleTodoAction(id));
-            alert("The todo was unable to be toggled.");
-          });
+        this.props.store.dispatch(handleToggleTodo(id));
       };
     }
 

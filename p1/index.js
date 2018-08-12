@@ -91,6 +91,28 @@ function handleAddGoal (goalName, callback) {
   };
 }
 
+function handleAddTodo (todoName, callback) {
+  return dispatch => {
+    return API.saveTodo(todoName)
+      .then(todo => {
+        dispatch(addTodoAction(todo));
+        callback();
+      })
+      .catch(() => alert("There was an error saving the todo. Please try again."));
+  };
+}
+
+function handleToggleTodo (todoID) {
+  return dispatch => {
+    dispatch(toggleTodoAction(todoID));
+    return API.saveTodoToggle(todoID)
+      .catch(() => {
+        dispatch(toggleTodoAction(todoID));
+        alert("The todo was unable to be toggled");
+      });
+  };
+}
+
 function checkAndDispatch (store, action) {
   if (
     action.type === ADD_TODO &&
