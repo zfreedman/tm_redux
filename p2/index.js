@@ -1,5 +1,7 @@
-import React from "react";
-import { render } from "react-dom";
+// import React from "react";
+// import { render } from "react-dom";
+
+const Context = React.createContext();
 
 function Parent () {
   return (
@@ -19,18 +21,28 @@ function Child () {
   );
 }
 
-function Grandchild ({ name }) {
+function Grandchild () {
   return (
-    <div>
-      <h3>Grandchild: {name}</h3>
-    </div>
+    <Context.Consumer>
+      {
+        name => (
+          <div>
+            <h3>Grandchild: {name}</h3>
+          </div>
+        )
+      }
+    </Context.Consumer>
   );
 }
 
 class App extends React.Component {
   render () {
     const name = "Default Name";
-    return <Parent />;
+    return (
+      <Context.Provider value={name}>
+        <Parent />
+      </Context.Provider>
+    );
   }
 }
 
