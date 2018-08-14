@@ -7,8 +7,58 @@
   <script src='https://unpkg.com/babel-standalone@6.15.0/babel.min.js'></script>
 </head>
 <body>
-  <script src="index.js"></script>
   <div id="root">
   </div>
+  <script type="text/babel">
+    // import React from "react";
+    // import { render } from "react-dom";
+
+    const Context = React.createContext();
+
+    function Parent () {
+      return (
+        <div>
+          <h1>Parent</h1>
+          <Child />
+        </div>
+      );
+    }
+
+    function Child () {
+      return (
+        <div>
+          <h2>Child</h2>
+          <Grandchild />
+        </div>
+      );
+    }
+
+    function Grandchild () {
+      return (
+        <Context.Consumer>
+          {
+            name => (
+              <div>
+                <h3>Grandchild: {name}</h3>
+              </div>
+            )
+          }
+        </Context.Consumer>
+      );
+    }
+
+    class App extends React.Component {
+      render () {
+        const name = "Default Name";
+        return (
+          <Context.Provider value={name}>
+            <Parent />
+          </Context.Provider>
+        );
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
 </body>
 </html>
