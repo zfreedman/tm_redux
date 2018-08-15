@@ -125,60 +125,32 @@
       }
 
       componentDidMount () {
-        const { store } = this.props;
+        const { dispatch } = this.props;
 
         // initial data fetch
-        store.dispatch(handleInitialData());
-
-        store.subscribe(this.forceUpdate.bind(this));
+        dispatch(handleInitialData());
       }
     }
 
-    class ConnectedApp extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {
-              store => {
-                const { loading } = store.getState();
-                return <App store={store} loading={loading} />;
-              }
-            }
-          </Context.Consumer>
-        );
-      }
-    }
+    // connect: Render any component, passing that component any data it needs
+    // from the Redux store
+    const ConnectedApp = connect(state => {
+      return {
+        loading: state.loading
+      };
+    })(App);
 
-    class ConnectedGoals extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {
-              store => {
-                const { goals } = store.getState();
-                return <Goals goals={goals} dispatch={store.dispatch} />
-              }
-            }
-          </Context.Consumer>
-        );
-      }
-    }
+    const ConnectedGoals = connect(state => {
+      return {
+        goals: state.goals
+      };
+    })(Goals);
 
-    class ConnectedTodos extends React.Component {
-      render() {
-        return (
-          <Context.Consumer>
-          {
-            store => {
-              const { todos } = store.getState();
-
-              return <Todos todos={todos} dispatch={store.dispatch} />
-            }
-          }
-          </Context.Consumer>
-        );
-      }
-    }
+    const ConnectedTodos = connect(state => {
+      return {
+        todos: state.todos
+      };
+    })(Todos);
 
     const Context = React.createContext();
 
