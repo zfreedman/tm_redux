@@ -3,11 +3,17 @@ import React, { Component } from 'react';
 
 import { handleInitialData } from "../actions/shared";
 
+import Dashboard from "./Dashboard";
+
 class App extends Component {
   render() {
     return (
       <div>
-        Starter Code.
+        {
+          this.props.loading
+            ? "Loading"
+            : <Dashboard />
+        }
       </div>
     )
   }
@@ -17,4 +23,8 @@ class App extends Component {
   }
 }
 
-export default connect()(App);
+let mapStateToProps = ({ authedUser}) => ({
+  loading: authedUser === null
+});
+
+export default connect(mapStateToProps)(App);
