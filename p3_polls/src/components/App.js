@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 
 import { handleInitialData } from "../actions/shared";
 
+import AddPoll from "./AddPoll";
 import Dashboard from "./Dashboard";
 import Leaderboard from "./Leaderboard";
 
@@ -15,7 +16,7 @@ class App extends Component {
         {
           this.props.loading
             ? null
-            : <Leaderboard />
+            : <AddPoll />
         }
       </div>
     )
