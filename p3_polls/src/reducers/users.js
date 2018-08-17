@@ -1,13 +1,19 @@
-import {
-  RECEIVE_USERS
-} from "../actions/users";
-
-import {
-  ADD_POLL
-} from "../actions/polls";
+import { ADD_ANSWER } from "../actions/answers";
+import { ADD_POLL } from "../actions/polls";
+import { RECEIVE_USERS } from "../actions/users";
 
 export default function users (state = {}, action) {
   switch (action.type) {
+
+    case ADD_ANSWER:
+      const user = state[action.authedUser];
+      return {
+        ...state,
+        [action.authedUser]: {
+          ...user,
+          answers: [...user.answers, action.id]
+        }
+      };
 
     case ADD_POLL:
       const { author, id } = action.poll;
