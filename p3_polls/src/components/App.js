@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { handleInitialData } from "../actions/shared";
 
 import Dashboard from "./Dashboard";
+import Leaderboard from "./Leaderboard";
 
 class App extends Component {
   render() {
@@ -14,7 +15,7 @@ class App extends Component {
         {
           this.props.loading
             ? null
-            : <Dashboard />
+            : <Leaderboard />
         }
       </div>
     )
