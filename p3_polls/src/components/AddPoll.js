@@ -98,6 +98,7 @@ class AddPoll extends React.Component {
     e.preventDefault();
 
     // redirect
+    this.props.history.push("/");
 
     // add poll to store and fake database
     this.props.dispatch(handleAddPoll(this.state));
